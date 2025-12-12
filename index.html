@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaushik Nandola | Data Scientist & AI Engineer</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        cyan: {
+                            450: '#06b6d4',
+                            glow: '#22d3ee',
+                        },
+                        dark: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                        }
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 3s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4; 
+        }
+
+        /* 3D Canvas Container */
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .skill-tag {
+            transition: all 0.3s ease;
+        }
+        .skill-tag:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+            border-color: #06b6d4;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-gray-200 antialiased overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 start-0 border-b border-gray-800 bg-dark-900/90 backdrop-blur-md">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <span class="self-center text-2xl font-bold whitespace-nowrap text-white">KD<span class="text-cyan-400">.</span></span>
+            </a>
+            <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-400 rounded-lg md:hidden hover:bg-gray-700 focus:outline-none" aria-controls="navbar-default" aria-expanded="false" id="menu-btn">
+                <span class="sr-only">Open main menu</span>
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+                </svg>
+            </button>
+            <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+                <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-700 rounded-lg bg-dark-800 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-transparent">
+                    <li><a href="#home" class="block py-2 px-3 text-cyan-400 md:p-0" aria-current="page">Home</a></li>
+                    <li><a href="#about" class="block py-2 px-3 text-gray-300 hover:text-cyan-400 md:hover:bg-transparent md:border-0 md:p-0 transition">About</a></li>
+                    <li><a href="#skills" class="block py-2 px-3 text-gray-300 hover:text-cyan-400 md:hover:bg-transparent md:border-0 md:p-0 transition">Skills</a></li>
+                    <li><a href="#projects" class="block py-2 px-3 text-gray-300 hover:text-cyan-400 md:hover:bg-transparent md:border-0 md:p-0 transition">Projects</a></li>
+                    <li><a href="#contact" class="block py-2 px-3 text-gray-300 hover:text-cyan-400 md:hover:bg-transparent md:border-0 md:p-0 transition">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Logic -->
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const navbar = document.getElementById('navbar-default');
+        menuBtn.addEventListener('click', () => {
+            navbar.classList.toggle('hidden');
+        });
+    </script>
+
+    <!-- Hero Section with 3D Background -->
+    <section id="home" class="relative h-screen flex items-center justify-center">
+        <!-- 3D Container -->
+        <div id="canvas-container"></div>
+        
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <p class="text-cyan-400 font-mono mb-4 text-lg animate-pulse">Hello, I am</p>
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
+                Kaushik Nandola
+            </h1>
+            <h2 class="text-2xl md:text-4xl text-gray-400 mb-8 font-light">
+                DataScience  <span class="text-cyan-400">|</span> AI & ML Practitioner
+            </h2>
+            <p class="text-gray-400 max-w-2xl mx-auto mb-10 text-lg leading-relaxed">
+                Transforming raw data into intelligent insights through Code, Mathematics, and Deep Learning algorithms.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#projects" class="px-8 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-full transition shadow-lg shadow-cyan-500/30">
+                    View Projects
+                </a>
+                <a href="#contact" class="px-8 py-3 border border-gray-500 hover:border-cyan-400 text-gray-300 hover:text-white font-semibold rounded-full transition">
+                    Contact Me
+                </a>
+            </div>
+            
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce-slow text-gray-500">
+                <i class="fas fa-chevron-down text-2xl"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-dark-900">
+        <div class="max-w-screen-xl mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="relative">
+                    <!-- Decorative abstract graphic -->
+                    <div class="absolute -top-4 -left-4 w-24 h-24 border-t-2 border-l-2 border-cyan-400 rounded-tl-3xl opacity-50"></div>
+                    <div class="glass-card p-8 rounded-2xl relative z-10">
+                        <h3 class="text-2xl font-bold text-white mb-4">Educational Background</h3>
+                        <ul class="space-y-4 text-gray-300">
+                            <li class="flex items-start">
+                                <i class="fas fa-graduation-cap mt-1 mr-3 text-cyan-400"></i>
+                                <div>
+                                    <strong class="text-white block">Bachelor of Computer Applications (BCA)</strong>
+                                    <span class="text-sm text-gray-400">Graduated</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-certificate mt-1 mr-3 text-cyan-400"></i>
+                                <div>
+                                    <strong class="text-white block">Data Science & AI/ML Certification</strong>
+                                    <span class="text-sm text-gray-400">Intensive Specialization Course</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="absolute -bottom-4 -right-4 w-24 h-24 border-b-2 border-r-2 border-cyan-400 rounded-br-3xl opacity-50"></div>
+                </div>
+                
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">About Me</h2>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        I am a passionate BCA graduate with a robust specialization in Data Science and Artificial Intelligence. My journey combines a strong foundation in computer science with advanced capabilities in machine learning algorithms and deep learning architectures.
+                    </p>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        I bridge the gap between complex mathematics and practical application. Whether it's wrangling large datasets with Python, visualizing trends in Power BI, or building NLP models to understand human language, I am driven by the challenge of solving real-world problems through data.
+                    </p>
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div class="p-4 bg-dark-800 rounded-lg">
+                            <i class="fas fa-brain text-2xl text-cyan-400 mb-2"></i>
+                            <div class="text-sm font-semibold">AI / ML</div>
+                        </div>
+                        <div class="p-4 bg-dark-800 rounded-lg">
+                            <i class="fas fa-chart-line text-2xl text-cyan-400 mb-2"></i>
+                            <div class="text-sm font-semibold">Analytics</div>
+                        </div>
+                        <div class="p-4 bg-dark-800 rounded-lg">
+                            <i class="fas fa-code text-2xl text-cyan-400 mb-2"></i>
+                            <div class="text-sm font-semibold">Dev</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-dark-800 relative overflow-hidden">
+        <!-- Background decorative element -->
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-cyan-900/10 blur-3xl transform skew-x-12 pointer-events-none"></div>
+
+        <div class="max-w-screen-xl mx-auto px-4 relative z-10">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-16">Technical Arsenal</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Languages -->
+                <div class="bg-dark-900 p-6 rounded-xl border border-gray-700 hover:border-cyan-500 transition duration-300">
+                    <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                        <i class="fas fa-code mr-3 text-cyan-400"></i> Languages
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Python</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">C++</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">C</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">SQL</span>
+                    </div>
+                </div>
+
+                <!-- AI & Data Science -->
+                <div class="bg-dark-900 p-6 rounded-xl border border-gray-700 hover:border-cyan-500 transition duration-300">
+                    <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                        <i class="fas fa-network-wired mr-3 text-cyan-400"></i> AI & ML
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Machine Learning</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Deep Learning</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">NLP</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Pandas/NumPy</span>
+						<span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Streamlit</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Scikit Learn</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">OpenCV</span>
+                    </div>
+                </div>
+
+                <!-- Tools & Viz -->
+                <div class="bg-dark-900 p-6 rounded-xl border border-gray-700 hover:border-cyan-500 transition duration-300">
+                    <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                        <i class="fas fa-chart-pie mr-3 text-cyan-400"></i> Tools
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Power BI</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Excel (Basic)</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Jupyter</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Git</span>
+                    </div>
+                </div>
+
+                <!-- Core Concepts -->
+                <div class="bg-dark-900 p-6 rounded-xl border border-gray-700 hover:border-cyan-500 transition duration-300">
+                    <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+                        <i class="fas fa-square-root-alt mr-3 text-cyan-400"></i> Core
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Mathematics</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Statistics</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Data Structures</span>
+                        <span class="skill-tag px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300 border border-gray-700">Algorithms</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-dark-900">
+        <div class="max-w-screen-xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-16">Current Projects</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Project 1: IPL Prediction -->
+                <div class="group relative overflow-hidden rounded-xl bg-dark-800 border border-gray-700 hover:border-cyan-500 transition duration-300 h-full flex flex-col">
+                    <div class="h-40 bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center group-hover:from-gray-700 group-hover:to-cyan-900 transition">
+                        <i class="fas fa-trophy text-5xl text-gray-400 group-hover:text-cyan-400 transition"></i>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 class="text-xl font-bold text-white mb-2">IPL Team Victory Prediction</h3>
+                        <p class="text-gray-400 text-sm mb-4">Machine Learning model to predict match winners based on historical data. Interactive Streamlit app.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Python</span>
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">ML</span>
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Streamlit</span>
+                        </div>
+                        <div class="mt-auto flex gap-4">
+                            <a href="https://machinelearning-rfmlqm65xjeznakezdpwlk.streamlit.app/" target="_blank" class="text-cyan-400 hover:text-white text-sm font-semibold flex items-center">
+                                <i class="fas fa-external-link-alt mr-2"></i> Live Demo
+                            </a>
+                            <a href="https://github.com/kddeveloper324/Machine_learning" target="_blank" class="text-gray-400 hover:text-white text-sm font-semibold flex items-center">
+                                <i class="fab fa-github mr-2"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: Music Reco -->
+                <div class="group relative overflow-hidden rounded-xl bg-dark-800 border border-gray-700 hover:border-cyan-500 transition duration-300 h-full flex flex-col">
+                    <div class="h-40 bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center group-hover:from-gray-700 group-hover:to-cyan-900 transition">
+                        <i class="fas fa-music text-5xl text-gray-400 group-hover:text-cyan-400 transition"></i>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 class="text-xl font-bold text-white mb-2">Music Recommendation System</h3>
+                        <p class="text-gray-400 text-sm mb-4">Content-based recommendation engine suggesting songs based on user preferences and audio features.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Python</span>
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Streamlit</span>
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Recommender</span>
+                        </div>
+                        <div class="mt-auto flex gap-4">
+                            <a href="https://musicreco-kch5ochmadny6emhtbsw6z.streamlit.app/" target="_blank" class="text-cyan-400 hover:text-white text-sm font-semibold flex items-center">
+                                <i class="fas fa-external-link-alt mr-2"></i> Live Demo
+                            </a>
+                            <a href="https://github.com/kddeveloper324/MusicReco" target="_blank" class="text-gray-400 hover:text-white text-sm font-semibold flex items-center">
+                                <i class="fab fa-github mr-2"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: IPL Dashboard -->
+                <div class="group relative overflow-hidden rounded-xl bg-dark-800 border border-gray-700 hover:border-cyan-500 transition duration-300 h-full flex flex-col">
+                    <div class="h-40 bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center group-hover:from-gray-700 group-hover:to-cyan-900 transition">
+                        <i class="fas fa-chart-pie text-5xl text-gray-400 group-hover:text-cyan-400 transition"></i>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 class="text-xl font-bold text-white mb-2">IPL Analysis Dashboard</h3>
+                        <p class="text-gray-400 text-sm mb-4">Interactive Power BI dashboard providing deep insights into IPL match statistics and player performance.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Power BI</span>
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Data Viz</span>
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Analytics</span>
+                        </div>
+                        <div class="mt-auto">
+                            <a href="https://github.com/kddeveloper324/GIT_HUB/tree/main/Data_Analysis" target="_blank" class="text-gray-400 hover:text-white text-sm font-semibold flex items-center">
+                                <i class="fab fa-github mr-2"></i> View Repository
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4: Nirakshan -->
+                <div class="group relative overflow-hidden rounded-xl bg-dark-800 border border-gray-700 hover:border-cyan-500 transition duration-300 h-full flex flex-col">
+                    <div class="h-40 bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center group-hover:from-gray-700 group-hover:to-cyan-900 transition">
+                        <i class="fas fa-eye text-5xl text-gray-400 group-hover:text-cyan-400 transition"></i>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 class="text-xl font-bold text-white mb-2">Nirakshan Deep Learning</h3>
+                        <p class="text-gray-400 text-sm mb-4">Advanced deep learning project for visual inspection/surveillance tasks using neural networks.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Deep Learning</span>
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Computer Vision</span>
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Python</span>
+                        </div>
+                        <div class="mt-auto">
+                            <a href="https://github.com/kddeveloper324/Deep_learning" target="_blank" class="text-gray-400 hover:text-white text-sm font-semibold flex items-center">
+                                <i class="fab fa-github mr-2"></i> View Repository
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5: Alert System -->
+                <div class="group relative overflow-hidden rounded-xl bg-dark-800 border border-gray-700 hover:border-cyan-500 transition duration-300 h-full flex flex-col">
+                    <div class="h-40 bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center group-hover:from-gray-700 group-hover:to-cyan-900 transition">
+                        <i class="fas fa-bell text-5xl text-gray-400 group-hover:text-cyan-400 transition"></i>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 class="text-xl font-bold text-white mb-2">Sleeping & Activity Alert</h3>
+                        <p class="text-gray-400 text-sm mb-4">Real-time system to detect drowsiness and monitor activity levels, ensuring safety through alerts.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">OpenCV</span>
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Real-time</span>
+                            <span class="text-xs bg-cyan-900 text-cyan-200 px-2 py-1 rounded">Python</span>
+                        </div>
+                        <div class="mt-auto">
+                            <a href="https://github.com/kddeveloper324/Alert_sytem" target="_blank" class="text-gray-400 hover:text-white text-sm font-semibold flex items-center">
+                                <i class="fab fa-github mr-2"></i> View Repository
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+  
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-dark-800 relative">
+        <div class="max-w-screen-md mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-8">Let's Connect</h2>
+            <p class="text-center text-gray-400 mb-12">
+                Open to opportunities in Data Science, Machine Learning, and Data Analytics.
+            </p>
+
+            <!-- Direct Contact Info Cards -->
+            <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <!-- Email -->
+                <a href="mailto:kaushik@example.com" class="p-6 bg-dark-900 rounded-xl border border-gray-700 hover:border-cyan-500 group transition text-center flex flex-col items-center">
+                    <div class="w-12 h-12 rounded-full bg-cyan-900/30 flex items-center justify-center mb-4 group-hover:bg-cyan-900/50 transition">
+                        <i class="fas fa-envelope text-xl text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-1">Email</h3>
+                    <p class="text-gray-400 text-sm break-all">kaushiknandola0719@gmail.com</p>
+                </a>
+
+                <!-- GitHub -->
+                <a href="https://github.com/kddeveloper324" target="_blank" class="p-6 bg-dark-900 rounded-xl border border-gray-700 hover:border-cyan-500 group transition text-center flex flex-col items-center">
+                    <div class="w-12 h-12 rounded-full bg-cyan-900/30 flex items-center justify-center mb-4 group-hover:bg-cyan-900/50 transition">
+                        <i class="fab fa-github text-xl text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-1">GitHub</h3>
+                    <p class="text-gray-400 text-sm">kddeveloper324</p>
+                </a>
+
+                <!-- Phone -->
+                <div class="p-6 bg-dark-900 rounded-xl border border-gray-700 hover:border-cyan-500 group transition text-center flex flex-col items-center cursor-default">
+                    <div class="w-12 h-12 rounded-full bg-cyan-900/30 flex items-center justify-center mb-4 group-hover:bg-cyan-900/50 transition">
+                        <i class="fas fa-phone text-xl text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-1">Phone</h3>
+                    <p class="text-gray-400 text-sm">6356648285</p>
+                </div>
+            </div>
+		<!--
+            <div class="glass-card p-8 rounded-2xl">
+                <form onsubmit="event.preventDefault(); alert('Thank you for reaching out! (This is a demo portfolio)');" class="space-y-6">
+                    <div>
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-300">Your Name</label>
+                        <input type="text" id="name" class="bg-gray-800 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 placeholder-gray-500" placeholder="Kaushik Nandola" required>
+                    </div>
+                    <div>
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-300">Your Email</label>
+                        <input type="email" id="email" class="bg-gray-800 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 placeholder-gray-500" placeholder="kaushiknandola0719@gmail.com" required>
+                    </div>
+                    <div>
+                        <label for="message" class="block mb-2 text-sm font-medium text-gray-300">Message</label>
+                        <textarea id="message" rows="4" class="bg-gray-800 border border-gray-600 text-gray-100 text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5 placeholder-gray-500" placeholder="Let's talk about data..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-3 text-center transition">Send Message</button>
+                </form>
+            </div> 
+		-->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark-900 border-t border-gray-800 py-6">
+        <div class="text-center text-gray-500 text-sm">
+            <p>&copy; 2024 Kaushik Nandola. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+
+
+    <!-- Three.js Animation Script -->
+    <script>
+        // Setup Three.js Scene
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        
+        // Camera Setup
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        // Renderer Setup
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // --- Create Objects ---
+
+        // 1. Central Icosahedron Wireframe
+        const geometry = new THREE.IcosahedronGeometry(10, 1);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0x06b6d4, 
+            wireframe: true, 
+            transparent: true, 
+            opacity: 0.3 
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // 2. Particle System (Data Points)
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 700;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            // Spread particles in a large cloud
+            posArray[i] = (Math.random() - 0.5) * 80; 
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            color: 0x22d3ee,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // 3. Floating Math Symbols / Nodes (Geometric shapes)
+        const shapesGroup = new THREE.Group();
+        const nodeGeo = new THREE.OctahedronGeometry(0.5);
+        const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.2 });
+        
+        for (let i = 0; i < 15; i++) {
+            const node = new THREE.Mesh(nodeGeo, nodeMat);
+            node.position.set(
+                (Math.random() - 0.5) * 50,
+                (Math.random() - 0.5) * 50,
+                (Math.random() - 0.5) * 50
+            );
+            shapesGroup.add(node);
+        }
+        scene.add(shapesGroup);
+
+
+        // Mouse Interaction
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - windowHalfX);
+            mouseY = (event.clientY - windowHalfY);
+        });
+
+        // Animation Loop
+        const clock = new THREE.Clock();
+
+        function animate() {
+            targetX = mouseX * 0.001;
+            targetY = mouseY * 0.001;
+
+            const elapsedTime = clock.getElapsedTime();
+
+            // Rotate central sphere
+            sphere.rotation.y += 0.005;
+            sphere.rotation.x += 0.002;
+
+            // Rotate particles opposite direction slowly
+            particlesMesh.rotation.y = -elapsedTime * 0.05;
+            particlesMesh.rotation.x = -elapsedTime * 0.02;
+
+            // Interactive movement with mouse easing
+            sphere.rotation.y += 0.05 * (targetX - sphere.rotation.y);
+            sphere.rotation.x += 0.05 * (targetY - sphere.rotation.x);
+
+            // Animate shapes group
+            shapesGroup.rotation.z += 0.002;
+            shapesGroup.children.forEach((child, i) => {
+                child.position.y += Math.sin(elapsedTime + i) * 0.02;
+                child.rotation.x += 0.01;
+            });
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Responsive Resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>
